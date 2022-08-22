@@ -14,14 +14,48 @@ warnings.simplefilter(action='ignore', category=FutureWarning)
 
 
 # Base metadata. MUST BE EDITED.
-BASE_IMAGE_URL = "ipfs://<-- Your CID Code-->"
 BASE_NAME = ""
+DESC = ""
+COLLECTION_NAME = ""
+COLLECTION_ID = ""
+COLLECTION_DESC = ""
+COLLECTION_TWITTER = ""
+COLLECTION_WEBSITE = ""
+COLLECTION_ICON = ""
+COLLECTION_BANNER = ""
 
 BASE_JSON = {
+    "format": "CHIP-0007",
     "name": BASE_NAME,
-    "description": "",
-    "image": BASE_IMAGE_URL,
+    "description": DESC,
+    "sensitive_content": False,
     "attributes": [],
+    "collection": {
+        "name": COLLECTION_NAME,
+        "id": COLLECTION_ID,
+        "attributes": [
+        {
+            "type": "description",
+            "value": COLLECTION_DESC
+        },
+        {
+            "type": "twitter",
+            "value": COLLECTION_TWITTER
+        },
+        {
+            "type": "website",
+            "value": COLLECTION_WEBSITE
+        },
+        {
+            "type": "icon",
+            "value": COLLECTION_ICON
+        },
+        {
+            "type": "banner",
+            "value": COLLECTION_BANNER
+        }
+        ]
+    }
 }
 
 
@@ -91,10 +125,8 @@ def main():
         item_json = deepcopy(BASE_JSON)
         
         # Append number to base name
-        item_json['name'] = item_json['name'] + str(idx)
+        item_json['name'] = item_json['name'] + " #" +str(idx).zfill(zfill_count)
 
-        # Append image PNG file name to base image path
-        item_json['image'] = item_json['image'] + '/' + str(idx).zfill(zfill_count) + '.png'
         
         # Convert pandas series to dictionary
         attr_dict = dict(row)
@@ -104,9 +136,9 @@ def main():
             
             if attr_dict[attr] != 'none':
                 item_json['attributes'].append({ 'trait_type': attr, 'value': attr_dict[attr] })
-        
+
         # Write file to json folder
-        item_json_path = os.path.join(json_path, str(idx))
+        item_json_path = os.path.join(json_path, str(str(idx) + ".json"))
         with open(item_json_path, 'w') as f:
             json.dump(item_json, f)
 
